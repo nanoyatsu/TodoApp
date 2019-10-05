@@ -17,7 +17,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 class TaskListFragment() : Fragment() {
-    enum class BundleKey { TASK_LIST, FILTER_FUNC }
+    enum class BundleKey { FILTER_FUNC }
+
+    // 静的変数 TaskListFragmentの各インスタンスで共有することで計算コストを減らす
     companion object {
         val tasks: ArrayList<Task> = arrayListOf()
         fun syncTasks() {
@@ -25,8 +27,6 @@ class TaskListFragment() : Fragment() {
             tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
         }
     }
-
-    private lateinit var filterFunc: ((Task) -> Boolean)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -37,18 +37,18 @@ class TaskListFragment() : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-//        val tasks = arguments?.getParcelableArrayList<Task>(BundleKey.TASK_LIST.name) ?: arrayListOf()
-        filterFunc = arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
+        // cast: uncheckだがunsafeではない / 最悪の場合でも{ true }
+        val filterFunc = arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
         if (tasks.isEmpty()) tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
 
         recycler_list.adapter = TaskItemAdapter(activity as AppCompatActivity, tasks, filterFunc)
-//        recycler_list.adapter = TaskItemAdapter(activity as AppCompatActivity, tasks, { syncTasks(filterFunc) }
         recycler_list.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
     }
 
+    // 画面スライド時に表示を同期したい
     override fun onResume() {
         super.onResume()
+
         recycler_list.adapter?.notifyDataSetChanged()
     }
-
 }

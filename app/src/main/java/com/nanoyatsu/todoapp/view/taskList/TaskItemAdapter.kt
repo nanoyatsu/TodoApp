@@ -19,7 +19,6 @@ class TaskItemAdapter(
     private val context: Context,
     private val tasks: ArrayList<Task>,
     private val filterFunc: ((Task) -> Boolean)
-//    private val dataSynchronizer: (() -> Unit)
 ) :
     RecyclerView.Adapter<TaskItemAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,10 +32,6 @@ class TaskItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        setContent(holder, tasks[position])
-//    }
-//
-//    private fun setContent(holder: ViewHolder, task: Task) {
         val task = tasks.filter(filterFunc)[position]
         holder.completedBox.isChecked = task.completed
         holder.label.text = task.label

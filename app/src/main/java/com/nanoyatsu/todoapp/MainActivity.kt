@@ -12,7 +12,6 @@ import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
-    private val tasks = arrayListOf<Task>()
     private var tabViewAdapter: TabViewAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         task_add_label.text?.clear()
         task_add_label.clearFocus()
 
-        // リスト更新
+        // リスト＆画面更新
         tabViewAdapter?.notifyDataSetChanged()
     }
 
