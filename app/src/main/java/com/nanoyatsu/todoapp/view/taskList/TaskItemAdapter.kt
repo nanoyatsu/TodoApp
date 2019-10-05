@@ -37,22 +37,30 @@ class TaskItemAdapter(
         holder.label.text = task.label
 
         val tasksIndex = tasks.indexOf(task)
-        holder.completedBox.setOnClickListener { _ ->
+
+        holder.completedBox.isEnabled = true
+        holder.completedBox.setOnClickListener {
+            it.isEnabled = false
             CoroutineScope(Dispatchers.IO).launch {
                 TodoDatabase.getInstance().taskDao().update(task.id, holder.completedBox.isChecked)
             }
-            tasks[tasksIndex].completed = holder.completedBox.isChecked
-            notifyDataSetChanged()
+            val realtimePosition = tasks.filter(filterFunc).indexOf(task)
+            task.completed = holder.completedBox.isChecked
+            tasks[tasksIndex] = task
+            if (filterFunc(task)) notifyItemChanged(realtimePosition)
+            else notifyItemRemoved(realtimePosition)
         }
+
+        holder.deleteForeverButton.isEnabled = true
         holder.deleteForeverButton.setOnClickListener {
+            it.isEnabled = false
             CoroutineScope(Dispatchers.IO).launch {
                 TodoDatabase.getInstance().taskDao().deleteById(task.id)
             }
+            notifyItemRemoved(tasks.filter(filterFunc).indexOf(tasks[tasksIndex]))
             tasks.removeAt(tasksIndex)
-            notifyDataSetChanged()
         }
     }
-
 
     class ViewHolder(base: CardView) : RecyclerView.ViewHolder(base) {
         val completedBox: CheckBox = base.findViewById(R.id.completed_box)
