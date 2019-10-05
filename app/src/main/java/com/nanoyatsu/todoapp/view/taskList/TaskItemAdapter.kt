@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -33,11 +34,14 @@ class TaskItemAdapter(private val context: Context, val tasks: ArrayList<Task>) 
         holder.completedBox.setOnClickListener {
             // todo データ更新
         }
-        // todo 削除ボタン
+        holder.deleteForeverButton.setOnClickListener {
+            // todo 削除ボタン
+        }
     }
 
     class ViewHolder(base: CardView) : RecyclerView.ViewHolder(base) {
         val completedBox: CheckBox = base.findViewById(R.id.completed_box)
         val label: TextView = base.findViewById(R.id.label)
+        val deleteForeverButton: ImageButton = base.findViewById(R.id.delete_forever_button)
     }
 }
