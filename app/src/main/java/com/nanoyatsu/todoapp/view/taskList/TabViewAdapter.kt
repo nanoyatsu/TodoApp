@@ -6,17 +6,26 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.nanoyatsu.todoapp.data.entity.Task
+import java.io.Serializable
 
-class TabViewAdapter(fm: FragmentManager, private val tasks: ArrayList<Task>) :
-    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class TabViewAdapter(val fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     enum class Tabs(val filterFunc: (Task) -> Boolean) { ACTIVE({ !it.completed }), ALL({ true }), COMPLETED({ it.completed }) }
 
+    private val tasks: ArrayList<Task> = arrayListOf()
+//    private fun syncTasks() {
+//        tasks.clear()
+//        tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
+//    }
+
     override fun getItem(position: Int): Fragment {
+//        syncTasks()
         val bundle = Bundle().also {
-            val list = arrayListOf<Task>()
-            list.addAll(tasks.filter(Tabs.values()[position].filterFunc))
-            it.putParcelableArrayList(
-                TaskListFragment.BundleKey.TASK_LIST.name, ArrayList(tasks.filter(Tabs.values()[position].filterFunc))
+            //            val passTasks: ArrayList<Task> = arrayListOf()
+//            passTasks.addAll(tasks.filter(Tabs.values()[position].filterFunc))
+//            it.putParcelableArrayList(TaskListFragment.BundleKey.TASK_LIST.name, passTasks)
+            it.putSerializable(
+                TaskListFragment.BundleKey.FILTER_FUNC.name,
+                Tabs.values()[position].filterFunc as Serializable
             )
         }
         return TaskListFragment().also { it.arguments = bundle }
@@ -30,7 +39,7 @@ class TabViewAdapter(fm: FragmentManager, private val tasks: ArrayList<Task>) :
         return Tabs.values()[position].name
     }
 
-    // notifyDatasetChanged()のたびに更新するようになる(計算コストが上がる)
+    // 現在位置notifyDatasetChanged()のたびに更新するようになる(計算コストが上がる)
     override fun getItemPosition(`object`: Any): Int {
         return PagerAdapter.POSITION_NONE
     }

@@ -13,23 +13,16 @@ import kotlinx.coroutines.runBlocking
 class MainActivity : AppCompatActivity() {
 
     private val tasks = arrayListOf<Task>()
-    private lateinit var tabViewAdapter: TabViewAdapter
+    private var tabViewAdapter: TabViewAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        syncTasks()
-        tabViewAdapter = TabViewAdapter(supportFragmentManager, tasks)
+        tabViewAdapter = TabViewAdapter(supportFragmentManager)
         list_container.adapter = tabViewAdapter
 
         task_add_button.setOnClickListener { addTask(task_add_label.text?.toString()) }
-    }
-
-    private fun syncTasks(): ArrayList<Task> {
-        tasks.clear()
-        tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
-        return tasks
     }
 
     private fun addTask(taskLabel: String?) {
@@ -48,9 +41,7 @@ class MainActivity : AppCompatActivity() {
         task_add_label.clearFocus()
 
         // リスト更新
-        syncTasks()
-        tabViewAdapter.notifyDataSetChanged()
+        tabViewAdapter?.notifyDataSetChanged()
     }
-
 
 }
