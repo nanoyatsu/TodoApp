@@ -11,15 +11,24 @@
         android:id = "@+id/list_container"
         android:layout_width = "match_parent"
         android:layout_height = "0dp"
-        android:layout_marginBottom = "@dimen/common_margin"
         app:layout_constraintTop_toTopOf = "parent"
-        app:layout_constraintBottom_toTopOf = "@id/task_add_label">
+        app:layout_constraintBottom_toTopOf = "@id/snackbar_coordinator">
 
         <com.google.android.material.tabs.TabLayout
             android:id = "@+id/tab_layout"
             android:layout_width = "match_parent"
             android:layout_height = "wrap_content" />
     </androidx.viewpager.widget.ViewPager>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id = "@+id/snackbar_coordinator"
+        android:layout_width = "0dp"
+        android:layout_height = "wrap_content"
+        android:layout_marginBottom = "@dimen/common_margin"
+        app:layout_constraintTop_toBottomOf = "@id/list_container"
+        app:layout_constraintBottom_toTopOf = "@+id/task_add_label"
+        app:layout_constraintEnd_toEndOf = "parent"
+        app:layout_constraintStart_toStartOf = "parent" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id = "@+id/task_add_label"
@@ -35,14 +44,15 @@
         android:hint = "@string/task_label_hint">
 
     </androidx.appcompat.widget.AppCompatEditText>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id = "@+id/task_add_button"
-            android:layout_width = "wrap_content"
-            android:layout_height = "wrap_content"
-            android:layout_gravity = "end|bottom"
-            android:layout_margin = "@dimen/common_margin"
-            app:layout_constraintEnd_toEndOf = "parent"
-            app:layout_constraintBottom_toBottomOf = "parent"
-            app:srcCompat = "@drawable/ic_add_white_48dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id = "@+id/task_add_button"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:layout_gravity = "end|bottom"
+        android:layout_margin = "@dimen/common_margin"
+        app:layout_constraintEnd_toEndOf = "parent"
+        app:layout_constraintBottom_toBottomOf = "parent"
+        app:srcCompat = "@drawable/ic_add_white_48dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
