@@ -15,13 +15,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val tasks = getTasks()
-        tabViewAdapter = TabViewAdapter(tasks, supportFragmentManager)
+        tabViewAdapter = TabViewAdapter(supportFragmentManager, tasks)
         list_container.adapter = tabViewAdapter
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
-    fun getTasks(): ArrayList<Task> {
+    private fun getTasks(): ArrayList<Task> {
         val tasks = arrayListOf<Task>()
         tasks.add(Task(1, "dummy-1-true", true))
         tasks.add(Task(2, "dummy-2-true", true))

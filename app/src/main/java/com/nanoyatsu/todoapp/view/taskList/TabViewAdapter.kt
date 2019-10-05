@@ -6,7 +6,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.nanoyatsu.todoapp.data.entity.Task
 
-class TabViewAdapter(private val tasks: ArrayList<Task>, fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+class TabViewAdapter(fm: FragmentManager, private val tasks: ArrayList<Task>) :
+    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     enum class Tabs(val filterFunc: (Task) -> Boolean) { ACTIVE({ !it.completed }), ALL({ true }), COMPLETED({ it.completed }) }
 
     override fun getItem(position: Int): Fragment {
