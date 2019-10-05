@@ -2,7 +2,6 @@ package com.nanoyatsu.todoapp
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nanoyatsu.todoapp.data.entity.Task
 import com.nanoyatsu.todoapp.view.taskList.TabViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -17,8 +16,6 @@ class MainActivity : AppCompatActivity() {
         val tasks = getTasks()
         tabViewAdapter = TabViewAdapter(supportFragmentManager, tasks)
         list_container.adapter = tabViewAdapter
-
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
     }
 
     private fun getTasks(): ArrayList<Task> {
@@ -29,20 +26,5 @@ class MainActivity : AppCompatActivity() {
         tasks.add(Task(4, "dummy-4-true", true))
         tasks.add(Task(5, "dummy-5-false", false))
         return tasks
-    }
-
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_home -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_dashboard -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_notifications -> {
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
     }
 }
