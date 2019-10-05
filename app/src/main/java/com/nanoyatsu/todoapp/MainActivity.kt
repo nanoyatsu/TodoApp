@@ -3,37 +3,46 @@ package com.nanoyatsu.todoapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.nanoyatsu.todoapp.data.entity.Task
 import com.nanoyatsu.todoapp.view.taskList.TabViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var tabViewAdapter: TabViewAdapter
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val tasks = getTasks()
+        tabViewAdapter = TabViewAdapter(tasks, supportFragmentManager)
+        list_container.adapter = tabViewAdapter
+
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    fun getTasks(): ArrayList<Task> {
+        val tasks = arrayListOf<Task>()
+        tasks.add(Task(1, "dummy-1-true", true))
+        tasks.add(Task(2, "dummy-2-true", true))
+        tasks.add(Task(3, "dummy-3-false", false))
+        tasks.add(Task(4, "dummy-4-true", true))
+        tasks.add(Task(5, "dummy-5-false", false))
+        return tasks
+    }
+
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
-//                message.setText(R.string.title_home)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
-//                message.setText(R.string.title_dashboard)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
-//                message.setText(R.string.title_notifications)
                 return@OnNavigationItemSelectedListener true
             }
         }
         false
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-
-        val fragmentStatePagerAdapter = TabViewAdapter(supportFragmentManager)
-        list_container.adapter = fragmentStatePagerAdapter
-    }
-
 }
