@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 class TaskItemAdapter(
     private val context: Context,
     private val tasks: ArrayList<Task>,
-    private val dataSynchronizer: (() -> Unit)
+    private val filterFunc: ((Task) -> Boolean)
+//    private val dataSynchronizer: (() -> Unit)
 ) :
     RecyclerView.Adapter<TaskItemAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,29 +29,31 @@ class TaskItemAdapter(
     }
 
     override fun getItemCount(): Int {
-        return tasks.size
+        return tasks.filter(filterFunc).size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        setContent(holder, tasks[position])
-    }
-
-    private fun setContent(holder: ViewHolder, task: Task) {
+//        setContent(holder, tasks[position])
+//    }
+//
+//    private fun setContent(holder: ViewHolder, task: Task) {
+        val task = tasks.filter(filterFunc)[position]
         holder.completedBox.isChecked = task.completed
         holder.label.text = task.label
 
-        holder.completedBox.setOnClickListener {
+        val tasksIndex = tasks.indexOf(task)
+        holder.completedBox.setOnClickListener { _ ->
             CoroutineScope(Dispatchers.IO).launch {
                 TodoDatabase.getInstance().taskDao().update(task.id, holder.completedBox.isChecked)
             }
-            dataSynchronizer()
+            tasks[tasksIndex].completed = holder.completedBox.isChecked
             notifyDataSetChanged()
         }
         holder.deleteForeverButton.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 TodoDatabase.getInstance().taskDao().deleteById(task.id)
             }
-            dataSynchronizer()
+            tasks.removeAt(tasksIndex)
             notifyDataSetChanged()
         }
     }

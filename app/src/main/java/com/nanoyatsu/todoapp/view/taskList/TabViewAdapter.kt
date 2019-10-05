@@ -43,4 +43,9 @@ class TabViewAdapter(val fm: FragmentManager) : FragmentStatePagerAdapter(fm, BE
     override fun getItemPosition(`object`: Any): Int {
         return PagerAdapter.POSITION_NONE
     }
+
+    override fun notifyDataSetChanged() {
+        TaskListFragment.syncTasks()
+        super.notifyDataSetChanged()
+    }
 }

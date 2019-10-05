@@ -18,9 +18,15 @@ import kotlinx.coroutines.runBlocking
 
 class TaskListFragment() : Fragment() {
     enum class BundleKey { TASK_LIST, FILTER_FUNC }
+    companion object {
+        val tasks: ArrayList<Task> = arrayListOf()
+        fun syncTasks() {
+            tasks.clear()
+            tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
+        }
+    }
 
-    private val tasks: ArrayList<Task> = arrayListOf()
-    lateinit var filterFunc: ((Task) -> Boolean)
+    private lateinit var filterFunc: ((Task) -> Boolean)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -33,20 +39,16 @@ class TaskListFragment() : Fragment() {
 
 //        val tasks = arguments?.getParcelableArrayList<Task>(BundleKey.TASK_LIST.name) ?: arrayListOf()
         filterFunc = arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
-        tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll().filter(filterFunc) })
+        if (tasks.isEmpty()) tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
 
-        recycler_list.adapter = TaskItemAdapter(activity as AppCompatActivity, tasks) { syncTasks(filterFunc) }
+        recycler_list.adapter = TaskItemAdapter(activity as AppCompatActivity, tasks, filterFunc)
+//        recycler_list.adapter = TaskItemAdapter(activity as AppCompatActivity, tasks, { syncTasks(filterFunc) }
         recycler_list.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
     }
 
     override fun onResume() {
         super.onResume()
-        syncTasks(filterFunc)
         recycler_list.adapter?.notifyDataSetChanged()
     }
 
-    private fun syncTasks(filterFunc: ((Task) -> Boolean)) {
-        tasks.clear()
-        tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll().filter(filterFunc) })
-    }
 }
