@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import com.nanoyatsu.todoapp.data.entity.Task
 
 class TabViewAdapter(fm: FragmentManager, private val tasks: ArrayList<Task>) :
@@ -19,7 +20,6 @@ class TabViewAdapter(fm: FragmentManager, private val tasks: ArrayList<Task>) :
             )
         }
         return TaskListFragment().also { it.arguments = bundle }
-
     }
 
     override fun getCount(): Int {
@@ -28,5 +28,10 @@ class TabViewAdapter(fm: FragmentManager, private val tasks: ArrayList<Task>) :
 
     override fun getPageTitle(position: Int): CharSequence? {
         return Tabs.values()[position].name
+    }
+
+    // notifyDatasetChanged()のたびに更新するようになる(計算コストが上がる)
+    override fun getItemPosition(`object`: Any): Int {
+        return PagerAdapter.POSITION_NONE
     }
 }
