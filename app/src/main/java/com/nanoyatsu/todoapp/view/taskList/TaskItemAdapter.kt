@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.todoapp.R
 import com.nanoyatsu.todoapp.data.entity.Task
 
-class TaskItemAdapter(private val context: Context, val tasks: ArrayList<Task>) :
+class TaskItemAdapter(private val context: Context, private val tasks: ArrayList<Task>) :
     RecyclerView.Adapter<TaskItemAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val base = LayoutInflater.from(context)
