@@ -1,8 +1,5 @@
 <resources>
     <string name = "app_name">TodoApp</string>
-    <string name = "title_home">Home</string>
-    <string name = "title_dashboard">Dashboard</string>
-    <string name = "title_notifications">Notifications</string>
     <string name = "delete_forever">delete_forever</string>
     <string name = "task_label_hint">What needs to be done?</string>
     <string name = "clear_completed">Clear completed</string>
