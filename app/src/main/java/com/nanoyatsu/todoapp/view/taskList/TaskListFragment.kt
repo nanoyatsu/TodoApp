@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import com.nanoyatsu.todoapp.R
 import com.nanoyatsu.todoapp.data.TodoDatabase
 import com.nanoyatsu.todoapp.data.entity.Task
@@ -30,7 +29,6 @@ class TaskListFragment() : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        (container as ViewPager).adapter
         return inflater.inflate(R.layout.fragment_task_list, container, false)
     }
 
@@ -38,17 +36,17 @@ class TaskListFragment() : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         // cast: uncheckだがunsafeではない / 最悪の場合でも{ true }
-        val filterFunc = arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
+        @Suppress("UNCHECKED_CAST") val filterFunc =
+            arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
         if (tasks.isEmpty()) tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
 
         recycler_list.adapter = TaskItemAdapter(activity as AppCompatActivity, tasks, filterFunc)
         recycler_list.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
     }
 
-    // 画面スライド時に表示を同期したい
-    override fun onResume() {
-        super.onResume()
-
-        recycler_list.adapter?.notifyDataSetChanged()
+    // 画面スライド時の表示同期用
+    fun reload() {
+        val adapter = recycler_list.adapter
+        adapter?.notifyItemRangeChanged(0, adapter.itemCount)
     }
 }
