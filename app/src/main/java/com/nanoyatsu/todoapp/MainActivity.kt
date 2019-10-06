@@ -1,6 +1,8 @@
 package com.nanoyatsu.todoapp
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
@@ -20,9 +22,27 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(toolbar)
 
         setViewPager(supportFragmentManager)
         task_add_button.setOnClickListener { addTask(task_add_label.text?.toString()) }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.navigation, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+
+        if (id == R.id.clear_completed) {
+            runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().deleteCompleted() }
+            tabViewAdapter?.notifyDataSetChanged()
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setViewPager(supportFragmentManager: FragmentManager) {
