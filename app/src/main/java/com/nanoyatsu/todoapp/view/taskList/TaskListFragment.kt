@@ -1,5 +1,6 @@
 package com.nanoyatsu.todoapp.view.taskList
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +41,7 @@ class TaskListFragment() : Fragment() {
             arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
         if (tasks.isEmpty()) tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
 
-        recycler_list.adapter = TaskItemAdapter(activity as AppCompatActivity, tasks, filterFunc)
+        recycler_list.adapter = TaskItemAdapter(activity as Context, tasks, filterFunc)
         recycler_list.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
     }
 
