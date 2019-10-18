@@ -19,12 +19,14 @@ import kotlinx.coroutines.runBlocking
 class TaskListFragment() : Fragment() {
     enum class BundleKey { FILTER_FUNC }
 
+
     // 静的変数 TaskListFragmentの各インスタンスで共有することで計算コストを減らす
     companion object {
         val tasks: ArrayList<Task> = arrayListOf()
+        var taskDao = TodoDatabase.getInstance().taskDao()
         fun syncTasks() {
             tasks.clear()
-            tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
+            tasks.addAll(runBlocking(Dispatchers.IO) { taskDao.getAll() })
         }
     }
 
@@ -39,7 +41,7 @@ class TaskListFragment() : Fragment() {
         // cast: uncheckだがunsafeではない / 最悪の場合でも{ true }
         @Suppress("UNCHECKED_CAST") val filterFunc =
             arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
-        if (tasks.isEmpty()) tasks.addAll(runBlocking(Dispatchers.IO) { TodoDatabase.getInstance().taskDao().getAll() })
+        if (tasks.isEmpty()) tasks.addAll(runBlocking(Dispatchers.IO) { taskDao.getAll() })
 
         recycler_list.adapter = TaskItemAdapter(activity as Context, tasks, filterFunc)
         recycler_list.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
