@@ -52,8 +52,18 @@ class TaskListFragmentTest {
         val scenario = launchFragmentInContainer<TaskListFragment>(fragmentArgs)
         scenario.moveToState(Lifecycle.State.CREATED)
         scenario.onFragment {
-            Assert.assertNotEquals(0, it.recycler_list.adapter?.itemCount)
-            Assert.assertEquals(3, it.recycler_list.adapter?.itemCount)
+            val adapter = it.recycler_list.adapter
+            if (adapter == null) {
+                Assert.fail("adapter is null.")
+                return@onFragment
+            }
+
+            Assert.assertNotEquals(0, adapter.itemCount)
+            Assert.assertEquals(3, adapter.itemCount)
+
+            val view = it.recycler_list.findViewHolderForAdapterPosition(0) as? TaskItemAdapter.ViewHolder
+            Assert.assertEquals(false, view?.completedBox?.isChecked)
+            Assert.assertEquals("1gou", view?.label?.text)
         }
     }
 }
