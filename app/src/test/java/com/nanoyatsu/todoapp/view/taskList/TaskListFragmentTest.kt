@@ -17,6 +17,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import org.robolectric.annotation.Config
+import java.io.Serializable
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.O])
@@ -64,6 +65,30 @@ class TaskListFragmentTest {
             val view = it.recycler_list.findViewHolderForAdapterPosition(0) as? TaskItemAdapter.ViewHolder
             Assert.assertEquals(false, view?.completedBox?.isChecked)
             Assert.assertEquals("1gou", view?.label?.text)
+        }
+
+        // 処理イメージ弱いのでとりあえずかく todo 共通化・切り出し
+        val completedFragmentArgs = Bundle().apply {
+            putSerializable(
+                TaskListFragment.BundleKey.FILTER_FUNC.name,
+                TabViewAdapter.Tabs.COMPLETED.filterFunc as Serializable
+            )
+        }
+        val completedScenario = launchFragmentInContainer<TaskListFragment>(completedFragmentArgs)
+        completedScenario.moveToState(Lifecycle.State.CREATED)
+        completedScenario.onFragment {
+            val adapter = it.recycler_list.adapter
+            if (adapter == null) {
+                Assert.fail("adapter is null.")
+                return@onFragment
+            }
+
+            Assert.assertNotEquals(0, adapter.itemCount)
+            Assert.assertEquals(1, adapter.itemCount)
+
+            val view = it.recycler_list.findViewHolderForAdapterPosition(0) as? TaskItemAdapter.ViewHolder
+            Assert.assertEquals(true, view?.completedBox?.isChecked)
+            Assert.assertEquals("2gou", view?.label?.text)
         }
     }
 }
