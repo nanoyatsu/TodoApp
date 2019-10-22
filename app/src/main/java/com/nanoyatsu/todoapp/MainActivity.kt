@@ -12,8 +12,6 @@ import com.nanoyatsu.todoapp.data.entity.Task
 import com.nanoyatsu.todoapp.view.taskList.TabViewAdapter
 import com.nanoyatsu.todoapp.view.taskList.TaskListFragment
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.navigation
-import kotlinx.android.synthetic.main.activity_todo_tab.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
