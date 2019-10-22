@@ -1,11 +1,28 @@
 package com.nanoyatsu.todoapp
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.nanoyatsu.todoapp.view.taskList.TaskListFragment
 import kotlinx.android.synthetic.main.activity_todo_tab.*
 
 class TodoTabActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_todo_tab)
+        setTodoListFragment(supportFragmentManager)
+
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+    }
+
+    private fun setTodoListFragment(fragmentManager: FragmentManager) {
+        fragmentManager.beginTransaction().also {
+            it.add(R.id.todo_list_container, TaskListFragment())
+            it.commit()
+        }
+    }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -25,10 +42,5 @@ class TodoTabActivity : AppCompatActivity() {
         false
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_todo_tab)
 
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-    }
 }
