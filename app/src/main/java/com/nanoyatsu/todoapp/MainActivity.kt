@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.nanoyatsu.todoapp.data.TodoDatabase
 import com.nanoyatsu.todoapp.data.entity.Task
 import com.nanoyatsu.todoapp.view.taskList.TabViewAdapter
+import com.nanoyatsu.todoapp.view.taskList.TaskListFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.navigation
+import kotlinx.android.synthetic.main.activity_todo_tab.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -21,6 +26,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        // リスト表示とタブボタン
+        setTodoListFragment(supportFragmentManager)
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        // タスク追加ボタン
         task_add_button.setOnClickListener { addTask(task_add_label.text?.toString()) }
     }
 
@@ -39,6 +49,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setTodoListFragment(fragmentManager: FragmentManager) {
+        fragmentManager.beginTransaction().also {
+            it.add(R.id.todo_list_container, TaskListFragment())
+            it.commit()
+        }
+    }
+
+    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        val taskList = supportFragmentManager.fragments.firstOrNull() as? TaskListFragment
+            ?: return@OnNavigationItemSelectedListener false
+        when (item.itemId) {
+            R.id.navigation_home -> {
+                taskList.filter { !it.completed }
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_dashboard -> {
+                taskList.filter { true }
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_notifications -> {
+                taskList.filter { it.completed }
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
     }
 
     private fun addTask(taskLabel: String?) {
