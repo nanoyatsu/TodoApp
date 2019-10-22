@@ -25,16 +25,21 @@ class TodoTabActivity : AppCompatActivity() {
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        val taskList = supportFragmentManager.fragments.firstOrNull() as? TaskListFragment
+            ?: return@OnNavigationItemSelectedListener false
         when (item.itemId) {
             R.id.navigation_home -> {
+                taskList.filter { !it.completed }
                 message.setText(R.string.title_home)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
+                taskList.filter { true }
                 message.setText(R.string.title_dashboard)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
+                taskList.filter { it.completed }
                 message.setText(R.string.title_notifications)
                 return@OnNavigationItemSelectedListener true
             }

@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class TaskItemAdapter(
     private val context: Context,
     private val tasks: ArrayList<Task>,
-    private val filterFunc: ((Task) -> Boolean)
+    var filterFunc: ((Task) -> Boolean)
 ) :
     RecyclerView.Adapter<TaskItemAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

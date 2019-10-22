@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,6 @@ import kotlinx.coroutines.runBlocking
 
 class TaskListFragment() : Fragment() {
     enum class BundleKey { FILTER_FUNC }
-
 
     // 静的変数 TaskListFragmentの各インスタンスで共有することで計算コストを減らす
     companion object {
@@ -51,5 +49,11 @@ class TaskListFragment() : Fragment() {
     fun reload() {
         val adapter = recycler_list.adapter
         adapter?.notifyItemRangeChanged(0, adapter.itemCount)
+    }
+
+    fun filter(func: (Task) -> Boolean) {
+        val adapter = recycler_list.adapter as? TaskItemAdapter ?: return
+        adapter.filterFunc = func
+        adapter.notifyDataSetChanged()
     }
 }
