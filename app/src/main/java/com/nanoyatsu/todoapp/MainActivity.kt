@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.nanoyatsu.todoapp.data.TodoDatabase
 import com.nanoyatsu.todoapp.data.entity.Task
+import com.nanoyatsu.todoapp.databinding.ActivityMainBinding
 import com.nanoyatsu.todoapp.view.taskList.TabViewAdapter
 import com.nanoyatsu.todoapp.view.taskList.TaskListFragment
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -21,16 +22,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+//        setContentView(R.layout.activity_main)
+        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main)
+
+        setSupportActionBar(binding.toolbar)
 
         // リスト表示とタブボタン
         setTodoListFragment(supportFragmentManager)
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        navigation.selectedItemId = R.id.navigation_dashboard
+        binding.navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        binding.navigation.selectedItemId = R.id.navigation_dashboard
 
         // タスク追加ボタン
-        task_add_button.setOnClickListener { addTask(task_add_label.text?.toString()) }
+        binding.taskAddButton.setOnClickListener { addTask(binding, binding.taskAddLabel.text?.toString()) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -77,10 +80,10 @@ class MainActivity : AppCompatActivity() {
         false
     }
 
-    private fun addTask(taskLabel: String?) {
+    private fun addTask(binding: ActivityMainBinding, taskLabel: String?) {
         if (taskLabel.isNullOrEmpty()) {
             Snackbar
-                .make(snackbar_coordinator, "Please input your task.", Snackbar.LENGTH_LONG)
+                .make(binding.snackbarCoordinator, "Please input your task.", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .show()
             return
@@ -89,8 +92,8 @@ class MainActivity : AppCompatActivity() {
         runBlocking(Dispatchers.IO) {
             TodoDatabase.getInstance().taskDao().insert(Task(label = taskLabel, completed = false))
         }
-        task_add_label.text?.clear()
-        task_add_label.clearFocus()
+        binding.taskAddLabel.text?.clear()
+        binding.taskAddLabel.clearFocus()
 
         // リスト＆画面更新
         tabViewAdapter?.notifyDataSetChanged()
