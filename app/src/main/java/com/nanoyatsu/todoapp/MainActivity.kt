@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         binding.navigation.selectedItemId = R.id.navigation_dashboard
 
         // タスク追加ボタン
-        binding.taskAddButton.setOnClickListener { addTask(binding, binding.taskAddLabel.text?.toString()) }
+        binding.taskAddButton.setOnClickListener { addTask(binding, binding.taskAddLabelText) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         runBlocking(Dispatchers.IO) {
             TodoDatabase.getInstance().taskDao().insert(Task(label = taskLabel, completed = false))
         }
-        binding.taskAddLabel.text?.clear()
+        binding.taskAddLabelText = ""
         binding.taskAddLabel.clearFocus()
 
         // リスト＆画面更新
