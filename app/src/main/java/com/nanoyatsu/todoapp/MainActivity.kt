@@ -27,13 +27,14 @@ class MainActivity : AppCompatActivity() {
         // リスト表示とタブボタン
         setTodoListFragment(supportFragmentManager)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation.selectedItemId = R.id.navigation_dashboard
 
         // タスク追加ボタン
         task_add_button.setOnClickListener { addTask(task_add_label.text?.toString()) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.navigation, menu)
+        menuInflater.inflate(R.menu.menu_meta, menu)
         return true
     }
 
