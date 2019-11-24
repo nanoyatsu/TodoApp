@@ -16,8 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class TaskItemAdapter(
-    private val context: Context,
-    var filterFunc: (Task) -> Boolean
+    private val context: Context
 ) :
     ListAdapter<Task, TaskItemAdapter.ViewHolder>(TaskDiffCallback()) {
 

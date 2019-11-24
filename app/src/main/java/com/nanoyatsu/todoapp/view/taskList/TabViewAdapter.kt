@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
-import com.nanoyatsu.todoapp.data.entity.Task
+import com.nanoyatsu.todoapp.TaskFilter
 import java.io.Serializable
 
 class TabViewAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-    enum class Tabs(val filterFunc: (Task) -> Boolean) { ACTIVE({ !it.completed }), ALL({ true }), COMPLETED({ it.completed }) }
+    enum class Tabs(val filterFunc: TaskFilter) { ACTIVE({ !it.completed }), ALL({ true }), COMPLETED({ it.completed }) }
 
     override fun getItem(position: Int): Fragment {
         val bundle = Bundle().also {
@@ -35,7 +35,7 @@ class TabViewAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHAVI
     }
 
     override fun notifyDataSetChanged() {
-        TaskListFragment.syncTasks()
+//        TaskListFragment.syncTasks()
         super.notifyDataSetChanged()
     }
 }

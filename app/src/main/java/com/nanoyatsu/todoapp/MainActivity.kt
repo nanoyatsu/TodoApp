@@ -69,15 +69,15 @@ class MainActivity : AppCompatActivity() {
             ?: return@OnNavigationItemSelectedListener false
         when (item.itemId) {
             R.id.navigation_home -> {
-                taskList.filter { !it.completed }
+//                taskList.filter { !it.completed }
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
-                taskList.filter { true }
+//                taskList.filter { true }
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
-                taskList.filter { it.completed }
+//                taskList.filter { it.completed }
                 return@OnNavigationItemSelectedListener true
             }
         }
