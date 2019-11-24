@@ -47,7 +47,7 @@ class TaskListFragment() : Fragment() {
             arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
         if (tasks.isEmpty()) tasks.addAll(runBlocking(Dispatchers.IO) { taskDao.getAll() })
 
-        val adapter = TaskItemAdapter(activity as Context, tasks, filterFunc)
+        val adapter = TaskItemAdapter(activity as Context, filterFunc)
         binding.recyclerList.adapter = adapter
         binding.recyclerList.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 

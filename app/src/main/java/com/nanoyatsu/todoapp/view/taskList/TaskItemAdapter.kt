@@ -8,13 +8,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.todoapp.R
+import com.nanoyatsu.todoapp.data.TodoDatabase
 import com.nanoyatsu.todoapp.data.entity.Task
 import com.nanoyatsu.todoapp.databinding.CardTaskBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class TaskItemAdapter(
     private val context: Context,
-    private val tasks: ArrayList<Task>,
-    var filterFunc: ((Task) -> Boolean)
+    var filterFunc: (Task) -> Boolean
 ) :
     ListAdapter<Task, TaskItemAdapter.ViewHolder>(TaskDiffCallback()) {
 
@@ -25,51 +28,30 @@ class TaskItemAdapter(
         return ViewHolder(binding)
     }
 
-//    override fun getItemCount(): Int {
-//        return tasks.filter(filterFunc).size
-//    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val task = getItem(position)
         holder.bind(task)
-
-//        val task = tasks.filter(filterFunc)[position]
-//        holder.binding.task = task
-//        val tasksIndex = tasks.indexOf(task)
-//
-////        holder.completedBox.isEnabled = true
-//        holder.binding.completedBox.isEnabled = true
-////        holder.completedBox.setOnClickListener {
-//        holder.binding.completedBox.setOnClickListener {
-//            it.isEnabled = false
-//            CoroutineScope(Dispatchers.IO).launch {
-//                TodoDatabase.getInstance().taskDao().update(task.id, holder.binding.task?.completed as Boolean)
-//            }
-//            val realtimePosition = tasks.filter(filterFunc).indexOf(task)
-////            task.completed = holder.completedBox.isChecked
-//            task.completed = holder.binding.task?.completed as Boolean
-//            tasks[tasksIndex] = task
-//            if (filterFunc(task)) notifyItemChanged(realtimePosition)
-//            else notifyItemRemoved(realtimePosition)
-//        }
-//
-////        holder.deleteForeverButton.isEnabled = true
-//        holder.binding.deleteForeverButton.isEnabled = true
-////        holder.deleteForeverButton.setOnClickListener {
-//        holder.binding.deleteForeverButton.setOnClickListener {
-//            it.isEnabled = false
-//            CoroutineScope(Dispatchers.IO).launch {
-//                TodoDatabase.getInstance().taskDao().deleteById(task.id)
-//            }
-//            notifyItemRemoved(tasks.filter(filterFunc).indexOf(tasks[tasksIndex]))
-//            tasks.removeAt(tasksIndex)
-//        }
-//        holder.binding.executePendingBindings()
     }
 
     class ViewHolder(val binding: CardTaskBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task) {
             binding.task = task
+
+            // todo ViewModelに持つ
+            binding.completedBox.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    TodoDatabase.getInstance().taskDao().update(task.id, binding.task?.completed as Boolean)
+                }
+            }
+
+            binding.deleteForeverButton.isEnabled = true
+            binding.deleteForeverButton.setOnClickListener {
+                it.isEnabled = false
+                CoroutineScope(Dispatchers.IO).launch {
+                    TodoDatabase.getInstance().taskDao().deleteById(task.id)
+                }
+            }
+            binding.executePendingBindings()
         }
     }
 
