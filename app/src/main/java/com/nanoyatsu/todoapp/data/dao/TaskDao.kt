@@ -1,5 +1,6 @@
 package com.nanoyatsu.todoapp.data.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,6 +11,9 @@ import com.nanoyatsu.todoapp.data.entity.Task
 interface TaskDao {
     @Query("SELECT * FROM Task")
     fun getAll(): List<Task>
+
+    @Query("SELECT * FROM Task")
+    fun getAllLiveData(): LiveData<List<Task>>
 
     // たぶんいらない
 //    @Query("SELECT * FROM Task WHERE id = :id")
