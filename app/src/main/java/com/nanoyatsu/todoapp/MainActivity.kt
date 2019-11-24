@@ -6,6 +6,8 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.nanoyatsu.todoapp.data.TodoDatabase
@@ -19,11 +21,15 @@ import kotlinx.coroutines.runBlocking
 class MainActivity : AppCompatActivity() {
 
     private var tabViewAdapter: TabViewAdapter? = null
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_main)
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main)
+        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        binding.vm = viewModel
+        binding.lifecycleOwner = this
 
         setSupportActionBar(binding.toolbar)
 
@@ -33,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         binding.navigation.selectedItemId = R.id.navigation_dashboard
 
         // タスク追加ボタン
-        binding.taskAddButton.setOnClickListener { addTask(binding, binding.taskAddLabelText) }
+        viewModel.eventAddTask.observe(this, Observer { if (it) addTask(binding, binding.taskAddLabelText) })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -97,6 +103,8 @@ class MainActivity : AppCompatActivity() {
 
         // リスト＆画面更新
         tabViewAdapter?.notifyDataSetChanged()
+        // ボタン状態を戻す
+        binding.vm?.onAddTaskComplete()
     }
 
 }
