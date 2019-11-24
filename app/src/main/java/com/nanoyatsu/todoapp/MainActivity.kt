@@ -21,15 +21,13 @@ import kotlinx.coroutines.runBlocking
 class MainActivity : AppCompatActivity() {
 
     private var tabViewAdapter: TabViewAdapter? = null
-    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        binding.vm = viewModel
-        binding.lifecycleOwner = this
+        val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main).also {
+            it.vm = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java)
+            it.lifecycleOwner = this@MainActivity
+        }
 
         setSupportActionBar(binding.toolbar)
 
@@ -39,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         binding.navigation.selectedItemId = R.id.navigation_dashboard
 
         // タスク追加ボタン
-        viewModel.eventAddTask.observe(this, Observer { if (it) addTask(binding, binding.taskAddLabelText) })
+        binding.vm?.eventAddTask?.observe(this, Observer { if (it) addTask(binding, binding.taskAddLabelText) })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
