@@ -1,5 +1,7 @@
 package com.nanoyatsu.todoapp.view.taskList
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.todoapp.TaskFilter
@@ -8,21 +10,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 
-class TaskListViewModel(
-    val dao: TaskDao,
-    private val filterFunc: TaskFilter
-) : ViewModel() {
+class TaskListViewModel(val dao: TaskDao) : ViewModel() {
     private var viewModelJob = Job()
     private var mainScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private val tasks = dao.getAllLiveData()
 
-//    private val _taskFilter: MutableLiveData<TaskFilter> = MutableLiveData<TaskFilter>()
-//    val taskFilter: LiveData<TaskFilter>
-//        get() = _taskFilter
+    private val _taskFilter = MutableLiveData<TaskFilter>()
+    val taskFilter: LiveData<TaskFilter>
+        get() = _taskFilter
 
     val filteredTasks = Transformations.map(tasks) { tasks ->
-        tasks.filter(filterFunc)
+        //        tasks.filter(filterFunc)
+        tasks
     }
 
     init {

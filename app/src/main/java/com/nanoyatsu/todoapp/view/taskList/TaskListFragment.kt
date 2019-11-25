@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nanoyatsu.todoapp.R
 import com.nanoyatsu.todoapp.data.TodoDatabase
-import com.nanoyatsu.todoapp.data.entity.Task
 import com.nanoyatsu.todoapp.databinding.FragmentTaskListBinding
 
 class TaskListFragment() : Fragment() {
@@ -35,12 +34,8 @@ class TaskListFragment() : Fragment() {
             false
         )
 
-        // cast: uncheckだがunsafeではない / 最悪の場合でも{ true }
-        @Suppress("UNCHECKED_CAST") val filterFunc =
-            arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean)
-                ?: { true }
         binding.also {
-            val factory = TaskListViewModelFactory(taskDao, filterFunc)
+            val factory = TaskListViewModelFactory(taskDao)
             it.vm =
                 ViewModelProvider(this@TaskListFragment, factory).get(TaskListViewModel::class.java)
             it.lifecycleOwner = this@TaskListFragment
