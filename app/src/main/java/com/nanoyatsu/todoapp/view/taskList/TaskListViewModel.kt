@@ -1,11 +1,13 @@
 package com.nanoyatsu.todoapp.view.taskList
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import android.view.MenuItem
+import androidx.lifecycle.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.nanoyatsu.todoapp.R
 import com.nanoyatsu.todoapp.TaskFilter
+import com.nanoyatsu.todoapp.combineLatest
 import com.nanoyatsu.todoapp.data.dao.TaskDao
+import com.nanoyatsu.todoapp.data.entity.Task
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,24 +22,24 @@ class TaskListViewModel(val dao: TaskDao) : ViewModel() {
     val taskFilter: LiveData<TaskFilter>
         get() = _taskFilter
 
-    val filteredTasks = Transformations.map(tasks) { tasks ->
-        //        tasks.filter(filterFunc)
-        tasks
-    }
+    val filteredTasks = combineLatest(tasks, taskFilter, this::doFilter)
 
     init {
-//        _taskFilter.value = filterFunc
+        _taskFilter.value = { true }
+    }
+
+    private fun doFilter(tasks: List<Task>?, taskFilter: TaskFilter?): List<Task> {
+        if (tasks == null) return listOf()
+        if (taskFilter == null) return tasks
+        return tasks.filter(taskFilter)
+    }
+
+    fun navigationItemSelectedListener(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.navigation_home -> _taskFilter.value = { !it.completed }
+            R.id.navigation_dashboard -> _taskFilter.value = { true }
+            R.id.navigation_notifications -> _taskFilter.value = { it.completed }
+        }
+        return true
     }
 }
-
-// fun <T1, T2, S> combineLatest(source1: LiveData<T1>, source2: LiveData<T2>,
-//                              func: (T1?, T2?) -> S?): LiveData<S> {
-//    val result = MediatorLiveData<S>()
-//    result.addSource(source1, {
-//        result.value = func.invoke(source1.value, source2.value)
-//    })
-//    result.addSource(source2, {
-//        result.value = func.invoke(source1.value, source2.value)
-//    })
-//    return result
-//}

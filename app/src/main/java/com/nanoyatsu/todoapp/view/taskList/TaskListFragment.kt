@@ -51,31 +51,16 @@ class TaskListFragment() : Fragment() {
         binding.recyclerList.layoutManager =
             LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 
-        binding.navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        binding.navigation.selectedItemId = R.id.navigation_dashboard
-        binding.vm?.filteredTasks?.observe(this, Observer { it?.let { adapter.submitList(it) } })
-    }
-
-    private val mOnNavigationItemSelectedListener =
-        BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            //        val taskList = activity?.supportFragmentManager?.fragments.firstOrNull() as? TaskListFragment
-//            ?: return@OnNavigationItemSelectedListener false
-//        when (item.itemId) {
-//            R.id.navigation_home -> {
-////                taskList.filter { !it.completed }
-//                return@OnNavigationItemSelectedListener true
-//            }
-//            R.id.navigation_dashboard -> {
-////                taskList.filter { true }
-//                return@OnNavigationItemSelectedListener true
-//            }
-//            R.id.navigation_notifications -> {
-////                taskList.filter { it.completed }
-//                return@OnNavigationItemSelectedListener true
-//            }
-//        }
-            false
+        binding.vm?.let { vm ->
+            binding.navigation.setOnNavigationItemSelectedListener(
+                BottomNavigationView.OnNavigationItemSelectedListener(
+                    vm::navigationItemSelectedListener
+                )
+            )
+            binding.navigation.selectedItemId = R.id.navigation_dashboard // todo VM側と同期したい
+            vm.filteredTasks.observe(this, Observer { adapter.submitList(it) })
         }
+    }
 
     // 静的変数 TaskListFragmentの各インスタンスで共有することで計算コストを減らす
     companion object {
