@@ -32,7 +32,7 @@ class TaskItemAdapter(
         holder.bind(task)
     }
 
-    class ViewHolder(val binding: CardTaskBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private val binding: CardTaskBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task) {
             binding.task = task
 

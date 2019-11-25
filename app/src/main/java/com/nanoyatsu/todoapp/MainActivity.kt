@@ -33,8 +33,6 @@ class MainActivity : AppCompatActivity() {
 
         // リスト表示とタブボタン
         setTodoListFragment(supportFragmentManager)
-        binding.navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        binding.navigation.selectedItemId = R.id.navigation_dashboard
 
         // タスク追加ボタン
         binding.vm?.eventAddTask?.observe(this, Observer { if (it) addTask(binding, binding.taskAddLabelText) })
@@ -62,26 +60,6 @@ class MainActivity : AppCompatActivity() {
             it.add(R.id.todo_list_container, TaskListFragment())
             it.commit()
         }
-    }
-
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        val taskList = supportFragmentManager.fragments.firstOrNull() as? TaskListFragment
-            ?: return@OnNavigationItemSelectedListener false
-        when (item.itemId) {
-            R.id.navigation_home -> {
-//                taskList.filter { !it.completed }
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_dashboard -> {
-//                taskList.filter { true }
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_notifications -> {
-//                taskList.filter { it.completed }
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
     }
 
     private fun addTask(binding: ActivityMainBinding, taskLabel: String?) {

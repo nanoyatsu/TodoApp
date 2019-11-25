@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nanoyatsu.todoapp.R
 import com.nanoyatsu.todoapp.data.TodoDatabase
 import com.nanoyatsu.todoapp.data.entity.Task
@@ -21,7 +22,11 @@ class TaskListFragment() : Fragment() {
 
     private lateinit var binding: FragmentTaskListBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         binding = DataBindingUtil.inflate(
             inflater,
@@ -32,10 +37,12 @@ class TaskListFragment() : Fragment() {
 
         // cast: uncheckだがunsafeではない / 最悪の場合でも{ true }
         @Suppress("UNCHECKED_CAST") val filterFunc =
-            arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean) ?: { true }
+            arguments?.getSerializable(BundleKey.FILTER_FUNC.name) as? ((Task) -> Boolean)
+                ?: { true }
         binding.also {
             val factory = TaskListViewModelFactory(taskDao, filterFunc)
-            it.vm = ViewModelProvider(this@TaskListFragment, factory).get(TaskListViewModel::class.java)
+            it.vm =
+                ViewModelProvider(this@TaskListFragment, factory).get(TaskListViewModel::class.java)
             it.lifecycleOwner = this@TaskListFragment
         }
         return binding.root
@@ -46,10 +53,34 @@ class TaskListFragment() : Fragment() {
 
         val adapter = TaskItemAdapter(activity as Context)
         binding.recyclerList.adapter = adapter
-        binding.recyclerList.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        binding.recyclerList.layoutManager =
+            LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
 
+        binding.navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        binding.navigation.selectedItemId = R.id.navigation_dashboard
         binding.vm?.filteredTasks?.observe(this, Observer { it?.let { adapter.submitList(it) } })
     }
+
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            //        val taskList = activity?.supportFragmentManager?.fragments.firstOrNull() as? TaskListFragment
+//            ?: return@OnNavigationItemSelectedListener false
+//        when (item.itemId) {
+//            R.id.navigation_home -> {
+////                taskList.filter { !it.completed }
+//                return@OnNavigationItemSelectedListener true
+//            }
+//            R.id.navigation_dashboard -> {
+////                taskList.filter { true }
+//                return@OnNavigationItemSelectedListener true
+//            }
+//            R.id.navigation_notifications -> {
+////                taskList.filter { it.completed }
+//                return@OnNavigationItemSelectedListener true
+//            }
+//        }
+            false
+        }
 
     // 静的変数 TaskListFragmentの各インスタンスで共有することで計算コストを減らす
     companion object {
