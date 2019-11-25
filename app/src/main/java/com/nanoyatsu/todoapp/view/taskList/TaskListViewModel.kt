@@ -2,7 +2,6 @@ package com.nanoyatsu.todoapp.view.taskList
 
 import android.view.MenuItem
 import androidx.lifecycle.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.nanoyatsu.todoapp.R
 import com.nanoyatsu.todoapp.TaskFilter
 import com.nanoyatsu.todoapp.combineLatest
@@ -36,9 +35,9 @@ class TaskListViewModel(val dao: TaskDao) : ViewModel() {
 
     fun navigationItemSelectedListener(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.navigation_home -> _taskFilter.value = { !it.completed }
-            R.id.navigation_dashboard -> _taskFilter.value = { true }
-            R.id.navigation_notifications -> _taskFilter.value = { it.completed }
+            R.id.navigation_unchecked -> _taskFilter.value = { !it.completed }
+            R.id.navigation_all -> _taskFilter.value = { true }
+            R.id.navigation_checked -> _taskFilter.value = { it.completed }
         }
         return true
     }

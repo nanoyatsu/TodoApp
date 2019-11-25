@@ -57,7 +57,7 @@ class TaskListFragment() : Fragment() {
                     vm::navigationItemSelectedListener
                 )
             )
-            binding.navigation.selectedItemId = R.id.navigation_dashboard // todo VM側と同期したい
+            binding.navigation.selectedItemId = R.id.navigation_all // todo VM側と同期したい
             vm.filteredTasks.observe(this, Observer { adapter.submitList(it) })
         }
     }
